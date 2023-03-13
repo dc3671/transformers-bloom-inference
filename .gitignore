@@ -1,1 +1,6 @@
 __pycache__/
+cscope/
+cscope.*
+tags
+tmp/
+bigscience
