@@ -1,5 +1,6 @@
 from ..constants import DS_INFERENCE, DS_ZERO, HF_ACCELERATE, HF_CPU
 from .model import Model, get_hf_model_class, load_tokenizer
+import oneccl_bindings_for_pytorch
 
 
 def get_model_class(deployment_framework: str):
@@ -27,4 +28,4 @@ def start_inference_engine(deployment_framework: str) -> None:
     if deployment_framework in [DS_INFERENCE, DS_ZERO]:
         import deepspeed
 
-        deepspeed.init_distributed("nccl")
+        deepspeed.init_distributed("ccl")

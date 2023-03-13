@@ -73,12 +73,12 @@ def benchmark_end_to_end(args: argparse.Namespace) -> None:
     if args.benchmark_cycles > 0:
         print_rank_0("*** Running benchmark")
 
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
         gc.collect()
 
         # warm up
         model.generate(request=request)
-        torch.cuda.synchronize()
+        # torch.cuda.synchronize()
 
         # benchmark
         total_new_tokens_generated, benchmark_time = run_and_log_time(
@@ -122,7 +122,8 @@ def get_args() -> argparse.Namespace:
 
 def main() -> None:
     args = get_args()
-    mapping_impi_to_torch()
+    if 'MPI_LOCALRANKID' in os.environ: # MPI launcher
+        mapping_impi_to_torch()
     start_inference_engine(args.deployment_framework)
     benchmark_end_to_end(args)
 

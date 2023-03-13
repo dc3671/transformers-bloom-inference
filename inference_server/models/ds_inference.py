@@ -31,7 +31,7 @@ class DSInferenceModel(Model):
 
         downloaded_model_path = get_model_path(args.model_name)
 
-        if args.dtype in [torch.float16, torch.int8]:
+        if args.dtype in [torch.bfloat16, torch.float16, torch.int8]:
             # We currently support the weights provided by microsoft (which are
             # pre-sharded)
             checkpoints_json = os.path.join(downloaded_model_path, "ds_inference_config.json")
@@ -58,13 +58,11 @@ class DSInferenceModel(Model):
                         checkpoint=checkpoints_json,
                         replace_with_kernel_inject=True,
                     )
-        elif args.dtype == torch.bfloat16:
-            # currently ds-inference only supports fp16 CUDA kernels :(
-            raise NotImplementedError("bfloat16 is not yet supported")
+        else:
+            raise NotImplementedError(f"{args.dtype} is not yet supported")
 
         self.model = self.model.module
-        self.input_device = torch.cuda.current_device()
-
+        self.input_device = 'cpu'
         self.post_init(args.model_name)
 
 
@@ -94,7 +92,8 @@ def get_model_path(model_name: str):
         config_file = "config.json"
 
         # will fall back to HUGGINGFACE_HUB_CACHE
-        config_path = try_to_load_from_cache(model_name, config_file, cache_dir=os.getenv("TRANSFORMERS_CACHE"))
+        # config_path = try_to_load_from_cache(model_name, config_file, cache_dir=os.getenv("TRANSFORMERS_CACHE"))
+        config_path = None
 
         if config_path is None:
             # treat the model name as an explicit model path
