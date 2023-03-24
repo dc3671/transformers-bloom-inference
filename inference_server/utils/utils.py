@@ -17,6 +17,7 @@ from ..constants import DS_INFERENCE, DS_ZERO, HF_ACCELERATE, HF_CPU
 
 # used for benchmarks
 dummy_input_sentences = [
+    "DeepSpeed is a machine learning framework for deep neural networks (DNNs) and deep reinforcement learning (DRL). It is written in C++ and is",
     "DeepSpeed is a machine learning framework",
     "He is working on",
     "He has a",
@@ -54,9 +55,12 @@ def get_argument_parser() -> argparse.ArgumentParser:
         "--dtype", type=str, required=True, choices=["bf16", "fp16", "int8", "fp32"], help="dtype for model"
     )
     group.add_argument(
+        "--device", type=str, default="cuda", choices=["cpu", "cuda", "xpu"], help="torch backend device"
+    )
+    group.add_argument(
         "--generate_kwargs",
         type=str,
-        default='{"min_length": 100, "max_new_tokens": 100, "do_sample": false}',
+        default='{"min_length": 10, "max_new_tokens": 32, "do_sample": false}',
         help="generate parameters. look at https://huggingface.co/docs/transformers/v4.21.1/en/main_classes/text_generation#transformers.generation_utils.GenerationMixin.generate to see the supported parameters",
     )
     group.add_argument("--max_input_length", type=int, help="max input length")

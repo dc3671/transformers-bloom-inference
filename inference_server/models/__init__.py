@@ -1,5 +1,6 @@
 from ..constants import DS_INFERENCE, DS_ZERO, HF_ACCELERATE, HF_CPU
 from .model import Model, get_hf_model_class, load_tokenizer
+import intel_extension_for_pytorch
 import oneccl_bindings_for_pytorch
 
 
